@@ -77,3 +77,10 @@
 		</div>
 	</button>
 </div>
+
+<style>
+	#dashboard {
+		max-height: 100svh;
+		overflow: hidden;
+	}
+</style>

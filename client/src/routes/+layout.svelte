@@ -44,24 +44,26 @@
 </script>
 
 <div class="  bg-amber-50 dark:text-gray-300 dark:bg-dark-blue min-h-screen flex relative layout">
-	{#if userDetails && userDetails.id && !load}
-		<AddContact />
-		<Profile />
-		<Dashbar />
-		<Chatlist />
-		<slot />
-	{:else if !load}
+	<!-- {#if userDetails && userDetails.id && !load} -->
+	<AddContact />
+	<Profile />
+	<Dashbar />
+	<Chatlist />
+	<slot />
+	<!-- {:else if !load}
 		<Signup />
 	{:else}
 		<p>Loading...</p>
-	{/if}
+	{/if} -->
 </div>
 
 <style>
 	.layout {
-		min-height: 100vh !important; /* fall-back */
+		min-height: 100svh !important; /* fall-back */
 		min-height: -moz-available !important;
 		min-height: -webkit-fill-available !important;
 		min-height: fill-available !important;
+		max-height: 100svh;
+		overflow: hidden;
 	}
 </style>

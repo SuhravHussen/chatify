@@ -31,7 +31,7 @@
 
 <div
 	id="profile-modal"
-	class="relative z-40 hidden"
+	class="relative z-50 hidden"
 	aria-labelledby="modal-title"
 	role="dialog"
 	aria-modal="true"
