@@ -5,4 +5,6 @@ export interface iConvo {
 	sender: iUser;
 	receiver: iUser;
 	createdAt: string;
+	error?: boolean;
+	id?: string;
 }

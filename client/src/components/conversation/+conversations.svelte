@@ -10,6 +10,7 @@
 	import SingleChat from './+singleChat.svelte';
 	import type { iUser } from '$lib/types/user.interface';
 	import type { iConvo } from '$lib/types/conversation.interface';
+	import { fetchContacts } from '$lib/helpers/fetchContacts';
 
 	// states
 	let limit = 0;
@@ -22,7 +23,7 @@
 	let prvInd = 9;
 	let typing = false;
 	let lastConvoElement: any;
-
+	let error = '';
 	//get user details from store
 	user.subscribe((value) => {
 		userDetails = value;
@@ -32,10 +33,6 @@
 	selectedUser.subscribe((value) => {
 		selectedUserDetails = value;
 	});
-
-	const addConvos = (convo: any) => {
-		convos = [convo, ...convos];
-	};
 
 	const fetchData = async () => {
 		if (!userDetails?.id || !selectedUserDetails?.id) {
@@ -60,11 +57,10 @@
 				lastConvoElement.scrollIntoView();
 			}
 		});
+
+		fetchContacts(userDetails!.id);
 	});
 
-	$: selectedUserDetails: {
-		console.log(selectedUserDetails);
-	}
 	//  socket listeners
 	onMount(() => {
 		io.on('receiveMessage', ({ to, from, message }) => {
@@ -90,13 +86,13 @@
 </script>
 
 <ul
-	class="flex flex-col justify-between p-5 w-full gap-6 max-h-[calc(100vh-180px)] overflow-y-auto lg:overflow-y-hidden convo-container lg:hover:overflow-y-auto lg:focus:overflow-y-auto lg:active:overflow-y-auto min-h-[calc(100vh-180px)]"
+	class="flex flex-col p-5 w-full gap-6 max-h-[calc(100vh-180px)] overflow-y-auto lg:overflow-y-hidden convo-container lg:hover:overflow-y-auto lg:focus:overflow-y-auto lg:active:overflow-y-auto min-h-[calc(100vh-180px)]"
 >
 	{#each convos.slice().reverse() as item, i}
 		{#if i === prvInd}
-			<SingleChat shouldBind {userDetails} bind:lastConvoElement {item} />
+			<SingleChat i={i.toString()} shouldBind {userDetails} bind:lastConvoElement {item} />
 		{:else}
-			<SingleChat {userDetails} bind:lastConvoElement {item} />
+			<SingleChat i={i.toString()} {userDetails} bind:lastConvoElement {item} />
 		{/if}
 	{/each}
 	{#if typing}
@@ -119,7 +115,7 @@
 	{/if}
 </ul>
 
-<Input bind:message {addConvos} />
+<Input bind:message bind:convos />
 
 <style>
 	.convo-container {

@@ -3,14 +3,18 @@
 	import { onMount } from 'svelte';
 	import SingleUser from './+single-user.svelte';
 	import { getContacts } from '$lib/graphql/contacts';
-	import { contacts as contactStore, selectedUser, user } from '../../../store/store';
+	import { contacts as contactStore, contacts, selectedUser, user } from '../../../store/store';
 	import { io } from '$lib/socket';
 	import type { iUser } from '$lib/types/user.interface';
+	import type { iContact } from '$lib/types/contact.interdace';
+	import { fetchContacts } from '$lib/helpers/fetchContacts';
 
 	//states
 	let userDetails: null | iUser;
 	let selectedUserDetails: null | iUser;
 	$: load = false as Boolean;
+	let contactArr: iContact[];
+
 	//open or close dashboard on mobile
 	const handleMenu = () => {
 		const t = document.getElementById('dashboard');
@@ -45,18 +49,6 @@
 		}
 	};
 
-	function fetchContacts() {
-		getContacts(userDetails!.id)
-			.then((res) => {
-				contactStore.set(res);
-				load = false;
-			})
-			.catch((err) => {
-				console.log(err);
-				load = false;
-			});
-	}
-
 	onMount(() => {
 		user.subscribe((value) => {
 			userDetails = value;
@@ -64,19 +56,20 @@
 		selectedUser.subscribe((val) => {
 			selectedUserDetails = val;
 		});
+
+		contacts.subscribe((v) => {
+			contactArr = v;
+		});
+
 		load = true;
 
-		fetchContacts();
+		fetchContacts(userDetails!.id).then(() => {
+			load = false;
+		});
 
 		io.on('receiveMessage', ({ to }) => {
 			if (to === userDetails!.id) {
-				fetchContacts();
-			}
-		});
-
-		io.on('userUpdated', ({ to }) => {
-			if (to === userDetails!.id) {
-				fetchContacts();
+				fetchContacts(userDetails!.id);
 			}
 		});
 	});

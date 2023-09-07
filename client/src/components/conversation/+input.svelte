@@ -1,14 +1,17 @@
 <script lang="ts">
 	import { getContacts } from '$lib/graphql/contacts';
 	import { createConversation } from '$lib/graphql/conversations';
+	import { fetchContacts } from '$lib/helpers/fetchContacts';
 	import { io } from '$lib/socket';
 	import type { iConvo } from '$lib/types/conversation.interface';
 	import type { iUser } from '$lib/types/user.interface';
 	import { contacts, selectedUser, user } from '../../store/store';
+	import { v4 as uuidv4 } from 'uuid';
 
 	// props
 	export let message: string;
-	export let addConvos: (convo: iConvo) => void;
+
+	export let convos: iConvo[];
 
 	//states
 	let selectedUserDetails: iUser | null;
@@ -21,25 +24,40 @@
 		userDetails = value;
 	});
 
-	const onSend = async () => {
+	const onSend = async (id: string) => {
 		try {
 			if (!message) return;
 			if (!selectedUserDetails?.id || !userDetails?.id) {
 				alert('something is wrong');
 				return;
 			}
+
+			const date = new Date();
+			let convo = {
+				text: message,
+				sender: userDetails,
+				receiver: selectedUserDetails,
+				createdAt: date.toString(),
+				id
+			};
+
+			convos = [convo, ...convos];
+
 			const res = await createConversation(message, selectedUserDetails.id, userDetails.id);
 			io.emit('sendMessage', {
 				message: res,
 				from: userDetails.id,
 				to: selectedUserDetails.id
 			});
-			addConvos(res);
-			const contactsList = await getContacts(userDetails.id);
 
-			contacts.set(contactsList);
+			fetchContacts(userDetails.id);
 			message = '';
 		} catch (error) {
+			console.log(error);
+			const index = convos.findIndex((c) => c.id === id);
+			if (index !== -1) {
+				convos[index].error = true;
+			}
 			console.log(error);
 		}
 	};
@@ -52,10 +70,9 @@
 		// Clear any previous timer
 		clearTimeout(typingTimer);
 
-		// Set a new timer to send a 'typingStopped' event after, let's say, 2000 milliseconds (2 seconds)
 		typingTimer = setTimeout(() => {
 			io.emit('typingStopped', { from: userDetails?.id, to: selectedUserDetails?.id });
-		}, 2000); // Adjust the timeout as needed
+		}, 2000);
 	};
 </script>
 
@@ -63,7 +80,7 @@
 	<input
 		on:keydown={(e) => {
 			if (e.key === 'Enter') {
-				onSend();
+				onSend(uuidv4());
 			}
 		}}
 		on:input={handleTyping}
@@ -72,5 +89,6 @@
 		type="text"
 		class="grow rounded-md h-8 p-6 bg-dark-blue border border-cyan-600"
 	/>
-	<button on:click={onSend} class="h-10 w-10"><img src="/send.png" alt="" /></button>
+	<button on:click={() => onSend(uuidv4())} class="h-10 w-10"><img src="/send.png" alt="" /></button
+	>
 </div>
