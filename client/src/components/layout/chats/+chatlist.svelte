@@ -73,11 +73,13 @@
 				fetchContacts();
 			}
 		});
-	});
 
-	$: selectedUserDetails: {
-		console.log(selectedUserDetails);
-	}
+		io.on('userUpdated', ({ to }) => {
+			if (to === userDetails!.id) {
+				fetchContacts();
+			}
+		});
+	});
 </script>
 
 <div
