@@ -22,8 +22,16 @@ const queries = {
     }
   },
   getContacts: async (_: any, payload: any, context: any) => {
-    const contacts = await conversationService.getContacts(payload.user);
-    return contacts;
+    if (context && context.user) {
+      const contacts = await conversationService.getContacts(payload.user);
+      return contacts;
+    } else {
+      throw new GraphQLError("You are unauthorized", {
+        extensions: {
+          code: 401,
+        },
+      });
+    }
   },
 };
 
