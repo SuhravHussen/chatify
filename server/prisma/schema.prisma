@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    Int            @id @default(autoincrement())
+  email                 String         @unique
+  name                  String
+  createdAt             DateTime       @default(now())
+  active                Boolean        @default(true)
+  lastLogin             DateTime?
+  conversationsSent     Conversation[] @relation("Sender")
+  conversationsReceived Conversation[] @relation("Receiver")
+  userOneContacts       Contact[]      @relation("userOne")
+  userTwoContacts       Contact[]      @relation("userTwo")
+
+  @@map("users")
+}
+
+model Conversation {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  text       String
+  sender     User      @relation("Sender", fields: [senderId], references: [id])
+  senderId   Int
+  receiver   User      @relation("Receiver", fields: [receiverId], references: [id])
+  receiverId Int
+  Contact    Contact[]
+  contactId  Int?
+  @@map("conversations")
+}
+
+model Contact {
+  id               Int           @id @default(autoincrement())
+  userOne          User          @relation("userOne", fields: [userOneId], references: [id])
+  userOneId        Int
+  userTwo          User          @relation("userTwo", fields: [userTwoId], references: [id])
+  userTwoId        Int
+  lastConversation Conversation? @relation(fields: [conversationId], references: [id])
+  seen             Boolean       @default(false)
+  conversationId   Int?
+
+  @@map("contacts")
+}
