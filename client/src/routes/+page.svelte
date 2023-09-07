@@ -37,7 +37,7 @@
 </script>
 
 <svelte:window on:beforeunload={beforeUnload} />
-<div class="flex flex-col items-center grow min-h-screen max-h-screen justify-center">
+<div class="flex flex-col items-center grow min-h-screen justify-center">
 	{#if !selectedUserDetails?.id}
 		<NotSelected />
 	{/if}

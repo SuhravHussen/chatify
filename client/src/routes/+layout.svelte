@@ -43,7 +43,7 @@
 	});
 </script>
 
-<div class="bg-amber-50 dark:text-gray-300 dark:bg-dark-blue min-h-screen flex relative">
+<div class="  bg-amber-50 dark:text-gray-300 dark:bg-dark-blue min-h-screen flex relative layout">
 	{#if userDetails && userDetails.id && !load}
 		<AddContact />
 		<Profile />
@@ -56,3 +56,12 @@
 		<p>Loading...</p>
 	{/if}
 </div>
+
+<style>
+	.layout {
+		min-height: 100vh !important; /* fall-back */
+		min-height: -moz-available !important;
+		min-height: -webkit-fill-available !important;
+		min-height: fill-available !important;
+	}
+</style>
