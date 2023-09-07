@@ -4,7 +4,7 @@ import UserService from "./services/user";
 
 export default function setupSocket(server: http.Server): void {
   const io = new Server(server, {
-    cors: { origin: "http://localhost:5173", credentials: true },
+    cors: { origin: process.env.ALLOWED_ORIGIN, credentials: true },
   });
 
   io.on("connection", (socket) => {

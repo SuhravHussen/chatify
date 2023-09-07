@@ -14,7 +14,7 @@ async function init() {
   const server = http.createServer(app);
   app.use(express.json());
   app.use(cookieParser());
-  app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+  app.use(cors({ origin: process.env.ALLOWED_ORIGIN, credentials: true }));
 
   app.get("/", (req, res) => {
     res.json({ message: "Server is up and running" });
