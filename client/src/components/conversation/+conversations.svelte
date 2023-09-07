@@ -90,7 +90,7 @@
 </script>
 
 <ul
-	class="flex flex-col p-5 w-full gap-6 max-h-[calc(100svh-180px)] overflow-auto lg:overflow-y-hidden convo-container lg:hover:overflow-y-auto lg:focus:overflow-y-auto active:overflow-y-auto min-h-[calc(100svh-180px)]"
+	class="flex flex-col justify-between p-5 w-full gap-6 max-h-[calc(100vh-180px)] overflow-y-auto lg:overflow-y-hidden convo-container lg:hover:overflow-y-auto lg:focus:overflow-y-auto lg:active:overflow-y-auto min-h-[calc(100vh-180px)]"
 >
 	{#each convos.slice().reverse() as item, i}
 		{#if i === prvInd}

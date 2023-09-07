@@ -30,7 +30,10 @@ const queries = {
   logout: async (_: any, parameters: any, context: any) => {
     if (context && context.user) {
       await UserService.updateLastLogin(context.user.email);
-      context.res.clearCookie("token");
+      context.res.clearCookie("token", {
+        secure: true,
+        sameSite: "None",
+      });
       return true;
     } else {
       throw new GraphQLError("You are unauthorized", {
