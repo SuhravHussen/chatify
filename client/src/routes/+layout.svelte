@@ -44,17 +44,17 @@
 </script>
 
 <div class="  bg-amber-50 dark:text-gray-300 dark:bg-dark-blue min-h-screen flex relative layout">
-	<!-- {#if userDetails && userDetails.id && !load} -->
-	<AddContact />
-	<Profile />
-	<Dashbar />
-	<Chatlist />
-	<slot />
-	<!-- {:else if !load}
+	{#if userDetails && userDetails.id && !load}
+		<AddContact />
+		<Profile />
+		<Dashbar />
+		<Chatlist />
+		<slot />
+	{:else if !load}
 		<Signup />
 	{:else}
 		<p>Loading...</p>
-	{/if} -->
+	{/if}
 </div>
 
 <style>
