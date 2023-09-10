@@ -8,9 +8,11 @@
 
 	const loginWithGoogle = async () => {
 		const provider = new GoogleAuthProvider();
+
 		try {
 			loading = true;
 			const userCredential = await signInWithPopup(firebaseAuth, provider);
+
 			const user = userCredential.user;
 
 			const variables = {
