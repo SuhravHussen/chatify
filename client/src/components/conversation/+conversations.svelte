@@ -61,6 +61,16 @@
 		fetchContacts(userDetails!.id);
 	});
 
+	$: selectedUserDetails: {
+		fetchData().then(() => {
+			if (lastConvoElement) {
+				lastConvoElement.scrollIntoView();
+			}
+		});
+
+		fetchContacts(userDetails!.id);
+	}
+
 	//  socket listeners
 	onMount(() => {
 		io.on('receiveMessage', ({ to, from, message }) => {
