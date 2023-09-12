@@ -1,0 +1,13 @@
+# Exclude node_modules and build artifacts
+
+node_modules
+/build
+
+# Exclude development and build-specific files
+
+_.log
+_.swp
+_.svelte
+_.git
+\*.gitignore
+.vscode

@@ -14,7 +14,7 @@ export default function setupSocket(server: http.Server): void {
       console.log("User logged out:", user);
 
       UserService.updateLastLogin(user).then(() => {
-        UserService.updateActiveStatus(user, false).then((res) => {
+        UserService.updateActiveStatus(user, false).then((res: any) => {
           socket.broadcast.emit("userUpdated", { user: res });
         });
       });
@@ -23,7 +23,7 @@ export default function setupSocket(server: http.Server): void {
     socket.on("userConnected", ({ user }: { user: string }) => {
       console.log("User connected:", user);
       // Perform any necessary actions when a user logs in
-      UserService.updateActiveStatus(user, true).then((res) => {
+      UserService.updateActiveStatus(user, true).then((res: any) => {
         socket.broadcast.emit("userUpdated", { user: res });
       });
     });
