@@ -25,27 +25,27 @@ I have used many technology to build this front end
 
 ## IMAGES FROM WEBSITE
 
-![Login Screen](images\signinscreen.png)
+![Login Screen](images/signinscreen.png)
 
 ---
 
-![Landing page Dark](images\landinscreendark.png)
+![Landing page Dark](images/landinscreendark.png)
 
 ---
 
-![landing Page Light](images\landingscreenlight.png)
+![landing Page Light](images/landingscreenlight.png)
 
 ---
 
-![Chat Screen Dark](images\chatscreendark.png)
+![Chat Screen Dark](images/chatscreendark.png)
 
 ---
 
-![Chat Screen  light](images\chatscreenlight.png)
+![Chat Screen  light](images/chatscreenlight.png)
 
 ---
 
-![Search User](images\searchuserscreen.png)
+![Search User](images/searchuserscreen.png)
 
 ---
 
