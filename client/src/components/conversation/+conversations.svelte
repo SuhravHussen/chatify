@@ -55,13 +55,15 @@
 		if (selectedUserDetails!.id) {
 			convos = [];
 			limit = 0;
-			fetchData().then(() => {
-				if (lastConvoElement) {
-					lastConvoElement.scrollIntoView();
-				}
-			});
+			fetchData();
 
 			fetchContacts(userDetails!.id);
+		}
+	}
+
+	$: {
+		if (lastConvoElement) {
+			lastConvoElement.scrollIntoView();
 		}
 	}
 
@@ -74,14 +76,12 @@
 		});
 
 		io.on('typingStarted', ({ to, from }) => {
-			console.log(to === userDetails?.id && from === selectedUserDetails?.id);
 			if (to === userDetails?.id && from === selectedUserDetails?.id) {
 				typing = true;
 			}
 		});
 
 		io.on('typingStopped', ({ to, from }) => {
-			console.log('typing stopped by', from);
 			if (to === userDetails?.id && from === selectedUserDetails?.id) {
 				typing = false;
 			}
@@ -93,7 +93,7 @@
 	class="flex flex-col p-5 w-full gap-6 max-h-[calc(100vh-180px)] overflow-y-auto lg:overflow-y-hidden convo-container lg:hover:overflow-y-auto lg:focus:overflow-y-auto lg:active:overflow-y-auto min-h-[calc(100vh-180px)]"
 >
 	{#each convos.slice().reverse() as item, i}
-		{#if i === prvInd}
+		{#if i === prvInd + 1 || i === prvInd}
 			<SingleChat i={i.toString()} shouldBind {userDetails} bind:lastConvoElement {item} />
 		{:else}
 			<SingleChat i={i.toString()} {userDetails} bind:lastConvoElement {item} />
@@ -104,15 +104,7 @@
 			<Typing />
 		</li>
 	{/if}
-	<InfiinityScroll
-		reverse
-		{hasMore}
-		threshold={100}
-		on:loadMore={() =>
-			fetchData().then(() => {
-				if (lastConvoElement) lastConvoElement.scrollIntoView();
-			})}
-	/>
+	<InfiinityScroll reverse {hasMore} threshold={100} on:loadMore={() => fetchData()} />
 
 	{#if loading}
 		<h1>loading...</h1>

@@ -1,19 +1,23 @@
-// place files you want to import through the `$lib` alias in this folder.
+import {
+	PUBLIC_FIREBASE_API_KEY,
+	PUBLIC_FIREBASE_AUTH_DOMAIN,
+	PUBLIC_FIREBASE_PROJECT_ID,
+	PUBLIC_FIREBASE_STORAGE_BUCKET,
+	PUBLIC_FIREBASE_MESSAGING_ID,
+	PUBLIC_FIREBASE_APP_ID
+} from '$env/static/public';
 
-// Import the functions you need from the SDKs you need
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-	apiKey: 'AIzaSyCVgQWgC9xkIRETMV6tbCuQ6jwb1Sn0UyE',
-	authDomain: 'chatify-c290a.firebaseapp.com',
-	projectId: 'chatify-c290a',
-	storageBucket: 'chatify-c290a.appspot.com',
-	messagingSenderId: '51815638195',
-	appId: '1:51815638195:web:79eacea2a6e2f46a613cc6'
+	apiKey: PUBLIC_FIREBASE_API_KEY,
+	authDomain: PUBLIC_FIREBASE_AUTH_DOMAIN,
+	projectId: PUBLIC_FIREBASE_PROJECT_ID,
+	storageBucket: PUBLIC_FIREBASE_STORAGE_BUCKET,
+	messagingSenderId: PUBLIC_FIREBASE_MESSAGING_ID,
+	appId: PUBLIC_FIREBASE_APP_ID
 };
 
 // Initialize Firebase
