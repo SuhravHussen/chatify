@@ -51,24 +51,18 @@
 		}
 	};
 
-	onMount(() => {
-		fetchData().then(() => {
-			if (lastConvoElement) {
-				lastConvoElement.scrollIntoView();
-			}
-		});
+	$: {
+		if (selectedUserDetails!.id) {
+			convos = [];
+			limit = 0;
+			fetchData().then(() => {
+				if (lastConvoElement) {
+					lastConvoElement.scrollIntoView();
+				}
+			});
 
-		fetchContacts(userDetails!.id);
-	});
-
-	$: selectedUserDetails: {
-		fetchData().then(() => {
-			if (lastConvoElement) {
-				lastConvoElement.scrollIntoView();
-			}
-		});
-
-		fetchContacts(userDetails!.id);
+			fetchContacts(userDetails!.id);
+		}
 	}
 
 	//  socket listeners
