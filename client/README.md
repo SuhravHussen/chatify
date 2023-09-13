@@ -49,4 +49,4 @@ I have used many technology to build this front end
 
 ---
 
-## ![Logout ](images\logoutscreen.png)
+## ![Logout ](images/logoutscreen.png)
