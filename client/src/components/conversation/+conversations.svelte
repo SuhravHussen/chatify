@@ -15,7 +15,7 @@
 	// states
 	let limit = 0;
 	let loading = false;
-	let convos = [] as iConvo[];
+	$: convos = [] as iConvo[];
 	let hasMore = true;
 	let message = '';
 	let userDetails: iUser | null;
@@ -53,10 +53,9 @@
 
 	$: {
 		if (selectedUserDetails!.id) {
-			convos = [];
 			limit = 0;
 			fetchData();
-
+			console.log('getting called');
 			fetchContacts(userDetails!.id);
 		}
 	}
@@ -92,13 +91,15 @@
 <ul
 	class="flex flex-col p-5 w-full gap-6 max-h-[calc(100vh-180px)] overflow-y-auto lg:overflow-y-hidden convo-container lg:hover:overflow-y-auto lg:focus:overflow-y-auto lg:active:overflow-y-auto min-h-[calc(100vh-180px)]"
 >
-	{#each convos.slice().reverse() as item, i}
-		{#if i === prvInd + 1 || i === prvInd}
-			<SingleChat i={i.toString()} shouldBind {userDetails} bind:lastConvoElement {item} />
-		{:else}
-			<SingleChat i={i.toString()} {userDetails} bind:lastConvoElement {item} />
-		{/if}
-	{/each}
+	{#key convos}
+		{#each convos.reverse() as item, i}
+			{#if i === prvInd + 1 || i === prvInd}
+				<SingleChat i={i.toString()} shouldBind {userDetails} bind:lastConvoElement {item} />
+			{:else}
+				<SingleChat i={i.toString()} {userDetails} bind:lastConvoElement {item} />
+			{/if}
+		{/each}
+	{/key}
 	{#if typing}
 		<li class="text-left contents">
 			<Typing />

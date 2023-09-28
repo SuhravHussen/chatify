@@ -40,9 +40,9 @@
 				createdAt: date.toString(),
 				id
 			};
-
+			console.log(message);
 			convos = [convo, ...convos];
-
+			console.log(convos);
 			const res = await createConversation(message, selectedUserDetails.id, userDetails.id);
 			io.emit('sendMessage', {
 				message: res,
