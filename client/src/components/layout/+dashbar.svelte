@@ -81,6 +81,6 @@
 <style>
 	#dashboard {
 		max-height: 100svh;
-		overflow: hidden;
+		min-height: 100svh;
 	}
 </style>

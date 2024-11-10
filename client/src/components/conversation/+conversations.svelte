@@ -1,76 +1,93 @@
 <script lang="ts">
-	// necessary modules
 	import { onMount } from 'svelte';
 	import Input from './+input.svelte';
 	import { getConversation } from '$lib/graphql/conversations';
 	import { user, selectedUser } from '../../store/store';
 	import { io } from '$lib/socket';
-	import InfiinityScroll from './+InfiinityScroll.svelte';
 	import Typing from './+typing.svelte';
 	import SingleChat from './+singleChat.svelte';
 	import type { iUser } from '$lib/types/user.interface';
 	import type { iConvo } from '$lib/types/conversation.interface';
 	import { fetchContacts } from '$lib/helpers/fetchContacts';
 
-	// states
+	// States
 	let limit = 0;
 	let loading = false;
-	$: convos = [] as iConvo[];
+	let convos: iConvo[] = [];
 	let hasMore = true;
 	let message = '';
-	let userDetails: iUser | null;
-	let selectedUserDetails: iUser | null;
-	let prvInd = 9;
+	let userDetails: iUser | null = null;
+	let selectedUserDetails: iUser | null = null;
 	let typing = false;
-	let lastConvoElement: any;
 	let error = '';
-	//get user details from store
-	user.subscribe((value) => {
-		userDetails = value;
-	});
+	let container: HTMLElement;
+	let isInitialLoad = true;
+	let previousHeight = 0;
 
-	//get selected user details from store
-	selectedUser.subscribe((value) => {
-		selectedUserDetails = value;
-	});
+	// Get user details from store
+	user.subscribe((value) => (userDetails = value));
 
-	const fetchData = async () => {
-		if (!userDetails?.id || !selectedUserDetails?.id) {
-			alert('something went wrong');
-			return;
-		}
+	// Get selected user details from store
+	selectedUser.subscribe((value) => (selectedUserDetails = value));
 
-		limit = limit + 10;
-
-		try {
-			const res = await getConversation(userDetails.id, selectedUserDetails.id, limit);
-			hasMore = res.hasMore;
-			convos = [...convos, ...res.conversations.slice(convos.length, res.conversations.length)];
-		} catch (error) {
-			console.log(error);
+	const scrollToBottom = () => {
+		if (container) {
+			container.scrollTop = container.scrollHeight;
 		}
 	};
 
-	$: {
-		if (selectedUserDetails!.id) {
-			limit = 0;
-			fetchData();
-			console.log('getting called');
-			fetchContacts(userDetails!.id);
+	const maintainScrollPosition = () => {
+		if (container && previousHeight) {
+			container.scrollTop = container.scrollHeight - previousHeight;
 		}
+	};
+
+	const fetchData = async () => {
+		if (!userDetails?.id || !selectedUserDetails?.id) {
+			alert('Something went wrong. Please try again.');
+			return;
+		}
+
+		loading = true;
+		try {
+			// Store the current scroll height before fetching
+			previousHeight = container?.scrollHeight || 0;
+
+			limit += 10;
+			const res = await getConversation(userDetails.id, selectedUserDetails.id, limit);
+			hasMore = res.hasMore;
+			convos = [...res.conversations.reverse()];
+
+			// After updating convos, handle scroll position
+			if (isInitialLoad) {
+				// For initial load, scroll to bottom
+				setTimeout(scrollToBottom, 0);
+				isInitialLoad = false;
+			} else {
+				// For pagination, maintain position
+				setTimeout(maintainScrollPosition, 0);
+			}
+		} catch (err) {
+			console.error('Error fetching data:', err);
+			error = 'Failed to load conversations. Please refresh.';
+		} finally {
+			loading = false;
+		}
+	};
+
+	$: if (selectedUserDetails!.id) {
+		limit = 0;
+		isInitialLoad = true;
+		fetchData();
+		fetchContacts(userDetails!.id);
 	}
 
-	$: {
-		if (lastConvoElement) {
-			lastConvoElement.scrollIntoView();
-		}
-	}
-
-	//  socket listeners
+	// Socket listeners
 	onMount(() => {
 		io.on('receiveMessage', ({ to, from, message }) => {
 			if (to === userDetails?.id && from === selectedUserDetails?.id) {
-				convos = [message, ...convos];
+				convos = [...convos, message];
+				setTimeout(scrollToBottom, 0);
 			}
 		});
 
@@ -86,29 +103,33 @@
 			}
 		});
 	});
+
+	const handleScroll = () => {
+		if (container.scrollTop === 0 && hasMore && !loading) {
+			fetchData();
+		}
+	};
 </script>
 
 <ul
 	class="flex flex-col p-5 w-full gap-6 max-h-[calc(100vh-180px)] overflow-y-auto lg:overflow-y-hidden convo-container lg:hover:overflow-y-auto lg:focus:overflow-y-auto lg:active:overflow-y-auto min-h-[calc(100vh-180px)]"
+	bind:this={container}
+	on:scroll={handleScroll}
 >
+	{#if loading}
+		<div class="text-center text-gray-500">Loading...</div>
+	{/if}
+
 	{#key convos}
-		{#each convos.reverse() as item, i}
-			{#if i === prvInd + 1 || i === prvInd}
-				<SingleChat i={i.toString()} shouldBind {userDetails} bind:lastConvoElement {item} />
-			{:else}
-				<SingleChat i={i.toString()} {userDetails} bind:lastConvoElement {item} />
-			{/if}
+		{#each convos as item, i}
+			<SingleChat shouldBind {userDetails} {item} />
 		{/each}
 	{/key}
+
 	{#if typing}
 		<li class="text-left contents">
 			<Typing />
 		</li>
-	{/if}
-	<InfiinityScroll reverse {hasMore} threshold={100} on:loadMore={() => fetchData()} />
-
-	{#if loading}
-		<h1>loading...</h1>
 	{/if}
 </ul>
 
@@ -119,7 +140,6 @@
 		scrollbar-width: thin;
 	}
 
-	/* Styling for Webkit (Chrome, Safari, newer versions of Edge) */
 	.convo-container::-webkit-scrollbar {
 		width: 5px;
 	}

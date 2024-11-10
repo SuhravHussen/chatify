@@ -3,12 +3,9 @@
 	import type { iUser } from '$lib/types/user.interface';
 	import dayjs from 'dayjs';
 
-	export let lastConvoElement;
 	export let item: iConvo;
 	export let userDetails: iUser | null;
 	export let shouldBind = false;
-
-	export let i: string;
 
 	function formatTimestamp(timestamp: string) {
 		return dayjs(timestamp).format('MMMM D, YYYY h:mm A');
@@ -22,7 +19,6 @@
 		} contents max-w-[50%]`}
 	>
 		<div
-			bind:this={lastConvoElement}
 			class={`flex flex-col gap-1  rounded-md p-2 ${
 				item.sender.id === userDetails?.id ? 'ml-auto' : 'mr-auto'
 			}`}
