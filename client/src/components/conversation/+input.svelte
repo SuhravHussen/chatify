@@ -76,7 +76,7 @@
 	};
 </script>
 
-<div class="flex w-full p-5 items-center gap-5">
+<div class="flex w-full p-5 items-center gap-5 h-[90px]">
 	<input
 		on:keydown={(e) => {
 			if (e.key === 'Enter') {
