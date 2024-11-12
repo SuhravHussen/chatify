@@ -112,7 +112,7 @@
 </script>
 
 <ul
-	class="flex flex-col p-5 w-full gap-6 max-h-[calc(100vh-180px)] overflow-y-auto lg:overflow-y-hidden convo-container lg:hover:overflow-y-auto lg:focus:overflow-y-auto lg:active:overflow-y-auto min-h-[calc(100vh-180px)]"
+	class="convo-container flex flex-col p-5 w-full gap-6 h-[90svh] overflow-y-auto lg:overflow-y-hidden lg:hover:overflow-y-auto lg:focus:overflow-y-auto lg:active:overflow-y-auto"
 	bind:this={container}
 	on:scroll={handleScroll}
 >
@@ -137,7 +137,7 @@
 
 <style>
 	.convo-container {
-		scrollbar-width: thin;
+		/* scrollbar-width: thin; */
 	}
 
 	.convo-container::-webkit-scrollbar {
