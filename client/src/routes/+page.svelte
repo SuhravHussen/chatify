@@ -37,7 +37,7 @@
 </script>
 
 <svelte:window on:beforeunload={beforeUnload} />
-<div class="flex flex-col items-center grow min-h-screen justify-center page">
+<div class="flex flex-col items-center grow min-h-[100dvh] justify-center page">
 	{#if !selectedUserDetails?.id}
 		<NotSelected />
 	{/if}
@@ -49,7 +49,7 @@
 
 <style>
 	.page {
-		max-height: 100svh;
+		max-height: 100dvh;
 		overflow: hidden;
 	}
 </style>
