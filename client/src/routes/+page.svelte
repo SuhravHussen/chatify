@@ -49,6 +49,6 @@
 
 <style>
 	.page {
-		max-height: 100svh;
+		max-height: 100dvh;
 	}
 </style>
