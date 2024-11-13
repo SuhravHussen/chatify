@@ -43,7 +43,9 @@
 	});
 </script>
 
-<div class="bg-amber-50 dark:text-gray-300 dark:bg-dark-blue min-h-screen flex relative">
+<div
+	class="bg-amber-50 dark:text-gray-300 dark:bg-dark-blue min-h-[100dvh] max-h-[100dvh] flex relative"
+>
 	{#if userDetails && userDetails.id && !load}
 		<AddContact />
 		<Profile />
